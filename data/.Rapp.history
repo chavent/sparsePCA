@@ -1,0 +1,2 @@
+load("/Users/chavent/Dropbox/Signets/sparseacp/package/data/Vtrue.RData")
+load("/Users/chavent/Dropbox/SparseACP/package/data/Ztrue.RData")
