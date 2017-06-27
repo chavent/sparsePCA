@@ -12,3 +12,4 @@ The data measure the amount of protein consumed for nine food groups in
 25 European countries. The nine food groups are red meat (RedMeat), white meat (WhiteMeat), 
 eggs (Eggs), milk (Milk), fish (Fish), cereal (Cereal), starch (Starch), nuts (Nuts), and fruits and vegetables (FruitVeg).
 }
+

@@ -18,7 +18,7 @@
 #'
 #'@references 
 #'\itemize{
-#'\item M. Chavent and G. Chavent, 
+#'\item M. Chavent and G. Chavent, Group-sparse block PCA and explained variance, arXiv:1705.00461
 #'\item M. Journee and al., Generalized Power Method for Sparse Principal Component Analysis, Journal of Machine Learning Research 11 (2010) 517-553.
 #'\item H. Shen and J.Z. Huang, Journal of Multivariate Analysis 99 (2008) 1015-1034.
 #'}
@@ -28,25 +28,26 @@
 #'  v2 <- c(rep(0,10), rep(1/sqrt(10),10),rep(0,480))
 #'  valp <- c(400,300,rep(1,498))
 #'  n <- 100
-#'  A <- simusparsePCA(n,cbind(v1,v2),valp,seed=1)
-#'  svd(A/sqrt(n))$d[1:3]^2 #eigenvalues of the empirical covariance matrix.
+#'  A <- simuPCA(n,cbind(v1,v2),valp,seed=1)
+#'  svd(A)$d[1:3]^2 #eigenvalues of the empirical covariance matrix.
 #'  
 #' # Example from Shen & Huang 2008
 #'  v1 <- c(1,1,1,1,0,0,0,0,0.9,0.9)
 #'  v2 <- c(0,0,0,0,1,1,1,1,-0.3,0.3)
 #'  valp <- c(200,100,50,50,6,5,4,3,2,1)
 #'  n <- 100
-#'  A <- simusparsePCA(n,cbind(v1,v2),valp,seed=1)
-#'  svd(A/sqrt(n))$d^2 #eigenvalues of the empirical covariance matrix.
+#'  A <- simuPCA(n,cbind(v1,v2),valp,seed=1)
+#'  svd(A)$d^2 #eigenvalues of the empirical covariance matrix (times n).
 #'  
 #' # Example from Chavent & Chavent 2017
 #'  valp <- c(c(200,180,150,130),rep(1,16))
 #'  data("Ztrue")
 #'  n <- 100
-#'  A <- simusparsePCA(n,Ztrue,valp,seed=1)
-#'  svd(A/sqrt(n))$d^2 #eigenvalues of the empirical covariance matrix.
-
-simusparsePCA <- function(n=30, Ztrue, valp, seed=FALSE)
+#'  A <-simuPCA(n,Ztrue,valp,seed=1)
+#'  svd(A)$d^2 #eigenvalues of the empirical covariance matrix.
+#'  
+#'@seealso \code{\link{sparsePCA}}, \code{\link{groupsparsePCA}}, \code{\link{pev}}
+simuPCA <- function(n=30, Ztrue, valp, seed=FALSE)
 {
   norm2 <- function(x) sqrt(sum(x^2))
   p <- nrow(Ztrue)
@@ -63,7 +64,7 @@ simusparsePCA <- function(n=30, Ztrue, valp, seed=FALSE)
   V <- qr.Q(qr(cbind(Ztrue,U)))
   C <- V%*%diag(valp)%*%t(V)
   if (seed != FALSE) set.seed(seed)
-  A <- mvtnorm::rmvnorm(n,sigma=C) 
+  A <- mvtnorm::rmvnorm(n,sigma=C) /sqrt(n)
   return(A)
 }
 

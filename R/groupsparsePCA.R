@@ -12,15 +12,16 @@
 #' @param mu vector of dimension m with the mu parameters (required for the block algorithms only). 
 #' By default, mu_j=1/j
 #' @param post If TRUE the loadings are obtained with post-processing.
-#' @param scale If scale=FALSE, the algorithm only centers the data matrix A. By default, scale=TRUE and the algorithm standardizes the data matrix (centered and scaled).
+#' @param center a logical value indicating whether the variables should be shifted to be zero centered.
+#' @param scale a logical value indicating whether the variables should be scaled to have unit variance.
 #' @param init a matrix of dimension p times m to initialize the loadings matrix Z in the algorithm.
 #' @return \item{Z}{the p times m matrix that contains the m sparse loading vectors} 
 #' @return \item{Y}{the n times m matrix that contains the m principal components}  
-#' @return \item{B}{the data matrix centered (if scale=FALSE) or standardized (if scale=TRUE)}
+#' @return \item{B}{the data matrix centered (if center=TRUE) and scaled (if scale=TRUE)}
 #' @details The principal components are given by the matrix Y=BZ  where B is the matrix A which has been centered (if scale=FALSE) or standardized (if scale=TRUE) and Z is the matrix of the sparse loading vectors. 
 #'@references 
 #'\itemize{
-#'\item M. Chavent and G. Chavent, 
+#'\item M. Chavent and G. Chavent, Group-sparse block PCA and explained variance, arXiv:1705.00461
 #'\item M. Journee and al., Generalized Power Method for Sparse Principal Component Analysis, Journal of Machine Learning Research 11 (2010) 517-553.
 #'\item H. Shen and J.Z. Huang, Journal of Multivariate Analysis 99 (2008) 1015-1034.
 #'}
@@ -31,14 +32,15 @@
 #'  v2 <- c(0,0,0,0,1,1,1,1,-0.3,0.3)
 #'  valp <- c(200,100,50,50,6,5,4,3,2,1)
 #'  n <- 50
-#'  A <- simusparsePCA(n,cbind(v1,v2),valp,seed=1)
+#'  A <- simuPCA(n,cbind(v1,v2),valp,seed=1)
 #'  # 10 scalar variables and 3 group variables of size 4,4,2
 #'  index <- rep(c(1,2,3),c(4,4,2)) 
 #'  Z <- groupsparsePCA(A,2,c(0.5,0.5),index,block=0)$Z #deflation
 #'  Z <- groupsparsePCA(A,2,c(0.5,0.5),index)$Z # block different mu
 #'  Z <- groupsparsePCA(A,2,c(0.5,0.5),index,mu=c(1,1))$Z # block same mu
+#'@seealso \code{\link{sparsePCA}}, \code{\link{pev}}
 
-groupsparsePCA <- function(A, m, lambda, index=1:ncol(A), block=1, mu=1/1:m,post=FALSE,scale=TRUE,init=NULL)
+groupsparsePCA <- function(A, m, lambda, index=1:ncol(A), block=1, mu=1/1:m,post=FALSE,center=TRUE,scale=TRUE,init=NULL)
 {
   n <- nrow(A)
   pp <- ncol(A) #number of scalar variables
@@ -48,6 +50,8 @@ groupsparsePCA <- function(A, m, lambda, index=1:ncol(A), block=1, mu=1/1:m,post
     stop("lambda must be a vector of size m",call. = FALSE)
   if ((max(lambda) >1) || (max(lambda) < 0))
     stop("Values in lambda must be in [0,1]",call. = FALSE)
+  if (length(index) !=ncol(A))
+    stop("the length of index is not correct",call. = FALSE)
   
   norm2 <- function(x) sqrt(sum(x^2))
   polar <- function(x)
@@ -66,9 +70,10 @@ groupsparsePCA <- function(A, m, lambda, index=1:ncol(A), block=1, mu=1/1:m,post
   A <- as.matrix(A)
   index <- as.factor(index)
 
+  if (center==TRUE)
+    A <- scale(A,center=TRUE, scale=FALSE) #center data
   if (scale==TRUE)
-    A <- scale(A)*sqrt(n/(n-1)) #standardize data
-  else A <- scale(A,center=TRUE, scale=FALSE) #center data
+    A <- scale(A,center=FALSE,scale=TRUE)*sqrt(n/(n-1)) #scale data
  
   if ((m==1) || (m>1 && block==0)) #single-unit algorithm (deflation is used if m>1)
   {

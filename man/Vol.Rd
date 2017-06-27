@@ -15,3 +15,4 @@ Vol(B, Z)
 The volume of the parallepipede constructed on the columns of the matrix Y=BZ. This volume measures the orthogonality of the columns of Y.
 It is normalized and takes its values between 0 and 1.
 }
+

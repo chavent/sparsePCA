@@ -5,7 +5,7 @@
 \title{Group-sparse PCA}
 \usage{
 groupsparsePCA(A, m, lambda, index = 1:ncol(A), block = 1, mu = 1/1:m,
-  post = FALSE, scale = TRUE, init = NULL)
+  post = FALSE, center = TRUE, scale = TRUE, init = NULL)
 }
 \arguments{
 \item{A}{a n times p  numerical data matrix.}
@@ -26,7 +26,9 @@ By default, mu_j=1/j}
 
 \item{post}{If TRUE the loadings are obtained with post-processing.}
 
-\item{scale}{If scale=FALSE, the algorithm only centers the data matrix A. By default, scale=TRUE and the algorithm standardizes the data matrix (centered and scaled).}
+\item{center}{a logical value indicating whether the variables should be shifted to be zero centered.}
+
+\item{scale}{a logical value indicating whether the variables should be scaled to have unit variance.}
 
 \item{init}{a matrix of dimension p times m to initialize the loadings matrix Z in the algorithm.}
 }
@@ -35,7 +37,7 @@ By default, mu_j=1/j}
 
 \item{Y}{the n times m matrix that contains the m principal components}
 
-\item{B}{the data matrix centered (if scale=FALSE) or standardized (if scale=TRUE)}
+\item{B}{the data matrix centered (if center=TRUE) and scaled (if scale=TRUE)}
 }
 \description{
 Group-sparse principal component analysis (PCA). Variables are arganized in groups and loadings of variables within the same
@@ -50,7 +52,7 @@ The principal components are given by the matrix Y=BZ  where B is the matrix A w
  v2 <- c(0,0,0,0,1,1,1,1,-0.3,0.3)
  valp <- c(200,100,50,50,6,5,4,3,2,1)
  n <- 50
- A <- simusparsePCA(n,cbind(v1,v2),valp,seed=1)
+ A <- simuPCA(n,cbind(v1,v2),valp,seed=1)
  # 10 scalar variables and 3 group variables of size 4,4,2
  index <- rep(c(1,2,3),c(4,4,2)) 
  Z <- groupsparsePCA(A,2,c(0.5,0.5),index,block=0)$Z #deflation
@@ -59,8 +61,12 @@ The principal components are given by the matrix Y=BZ  where B is the matrix A w
 }
 \references{
 \itemize{
-\item M. Chavent and G. Chavent, 
+\item M. Chavent and G. Chavent, Group-sparse block PCA and explained variance, arXiv:1705.00461
 \item M. Journee and al., Generalized Power Method for Sparse Principal Component Analysis, Journal of Machine Learning Research 11 (2010) 517-553.
 \item H. Shen and J.Z. Huang, Journal of Multivariate Analysis 99 (2008) 1015-1034.
 }
 }
+\seealso{
+\code{\link{sparsePCA}}, \code{\link{pev}}
+}
+

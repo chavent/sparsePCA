@@ -28,8 +28,9 @@ of zero in Z which are not true zero.
  Ztrue <- cbind(v1,v2)
  valp <- c(200,100,50,50,6,5,4,3,2,1)
  n <- 50
- A <- simusparsePCA(n,Ztrue,valp,seed=1)
+ A <- simuPCA(n,Ztrue,valp,seed=1)
  Z <- sparsePCA(A,2,c(0.5,0.5),block=1)$Z
  truth(Ztrue,Z) #tpr
  truth(Ztrue,Z,method="incorrect") #fpr
 }
+

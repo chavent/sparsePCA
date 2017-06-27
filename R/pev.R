@@ -6,7 +6,7 @@
 #' the total variance of the data (the Frobenius norm of A).} 
 #' @references 
 #'\itemize{
-#'\item M. Chavent & G. Chavent,
+#'\item M. Chavent & G. Chavent, Group-sparse block PCA and explained variance, arXiv:1705.00461
 #'}
 #' @export
 #' @examples 
@@ -15,6 +15,7 @@
 #' pev(x)
 #' x <- groupsparsePCA(protein,2,index=1:ncol(protein),c(0.5,0.5))
 #'pev(x)
+#'@seealso \code{\link{sparsePCA}}, \code{\link{groupsparsePCA}}, \code{\link{explainedVar}}, \code{\link{optVardim}}, 
 pev <- function(x)
   {
   if (!inherits(x, "sparsePCA")) 

@@ -15,3 +15,4 @@ RVcoef(X, Y)
 The RV coefficient is a measures the proximity between two matrices (subspaces spanned by the columns ofthe matrices). This measure
 is normalized and takes its values between 0 and 1.
 }
+

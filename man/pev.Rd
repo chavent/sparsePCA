@@ -26,6 +26,10 @@ pev(x)
 }
 \references{
 \itemize{
-\item M. Chavent & G. Chavent,
+\item M. Chavent & G. Chavent, Group-sparse block PCA and explained variance, arXiv:1705.00461
 }
 }
+\seealso{
+\code{\link{sparsePCA}}, \code{\link{groupsparsePCA}}, \code{\link{explainedVar}}, \code{\link{optVardim}},
+}
+

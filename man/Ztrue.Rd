@@ -12,3 +12,4 @@ The four columns are specified leading eigenvectors of a covariance matrix used 
 simulate data from a group-sparse PCA model : the 20 variables are organized in
 5 groups of 4 variables.
 }
+
