@@ -2,7 +2,7 @@
 % Please edit documentation in R/pev.R
 \name{pev}
 \alias{pev}
-\title{Proportion of explained variance of sparse principal components}
+\title{Proportion of variance explained by non orthogonal principal components}
 \usage{
 pev(x)
 }
@@ -10,26 +10,33 @@ pev(x)
 \item{x}{a object of class \code{sparsePCA}.}
 }
 \value{
-\item{pev}{the proportion of explained variance of the m principal components i.e. the optimal variance (optVar) divided 
-the total variance of the data (the Frobenius norm of A).}
+The proportion of variance explained by each principal components.
 }
 \description{
-The proportion of explained variance of the m principal components i.e. the optimal variance (optVar) divided by
-the total variance of the data (the Frobenius norm of A).
+This function calculates the proportion of variance explained by
+not necessarily orthogonal principal components, using the optimal projected
+variance (optVar).
+}
+\details{
+The object \code{x} is the output of \code{\link{sparsePCA}} or 
+\code{\link{groupsparsePCA}}. The  variance of the not necessarily 
+orthogonal principal components in \code{x}
+is calculated with the optimal projected variance definition (see Chavent and Chavent, 2020)
+and is divided by the total variance of the data to get a proportion of
+explained variance (pev).
 }
 \examples{
 data(protein)
-x <- sparsePCA(protein,2,c(0.5,0.5))
+x <- sparsePCA(protein, 2, c(0.5,0.5))
 pev(x)
-x <- groupsparsePCA(protein,2,index=1:ncol(protein),c(0.5,0.5))
+x <- groupsparsePCA(protein, 2, index=1:ncol(protein), c(0.5,0.5))
 pev(x)
 }
 \references{
-\itemize{
-\item M. Chavent & G. Chavent, Group-sparse block PCA and explained variance, arXiv:1705.00461
-}
+M. Chavent and G. Chavent, Optimal projected variance group-sparse
+block PCA, submitted, 2020.
 }
 \seealso{
-\code{\link{sparsePCA}}, \code{\link{groupsparsePCA}}, \code{\link{explainedVar}}, \code{\link{optVardim}},
+\code{\link{optVardim}}, \code{\link{explainedVar}}, 
+\code{\link{sparsePCA}}, \code{\link{groupsparsePCA}},
 }
-

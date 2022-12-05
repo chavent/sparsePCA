@@ -1,5 +1,7 @@
-#' @title proportion of correct or incorrect zero
-#' @description Returns the proportion of zero correctly or incorrectly found in each colum of the loadings matrix Z.
+#' @title Proportion of correct or incorrect zero
+#' @export
+#' @description Returns the proportion of zero correctly or incorrectly found 
+#' in each colum of the loadings matrix Z.
 #' @param Ztrue the true sparse loadings matrix.
 #' @param Z the obtained sparse loading matrix.
 #' @param method either "correct" or "incorrect".
@@ -17,7 +19,7 @@
 #'  Z <- sparsePCA(A,2,c(0.5,0.5),block=1)$Z
 #'  truth(Ztrue,Z) #tpr
 #'  truth(Ztrue,Z,method="incorrect") #fpr
-#' @export
+
 truth <- function(Ztrue,Z,method="correct")
 {
   if (!(method %in% c("correct","incorrect")))
@@ -46,11 +48,12 @@ truth <- function(Ztrue,Z,method="correct")
 
 
 #' @title RV coefficient
+#' @export
 #' @description The RV coefficient is a measures the proximity between two matrices (subspaces spanned by the columns ofthe matrices). This measure
 #' is normalized and takes its values between 0 and 1.
 #' @param X a matrix of dimension n times p
 #' @param Y a matrix of dimension n times q
-#' @export
+
 RVcoef <- function(X,Y)
 {
   sum((t(X)%*%Y)^2)/(sqrt(sum((t(X)%*%X)^2))*sqrt(sum((t(Y)%*%Y)^2)))

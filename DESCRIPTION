@@ -7,10 +7,13 @@ Author: Marie Chavent
 Maintainer: Marie Chavent <marie.chavent@u-bordeaux.fr>
 Description: This package performs sparse or group-sparse principal component
     analysis. Deflation and block algorithms are implemented. Five different
-    definition of explained variance for a set of non orhogonal components are also
+    definition of explained variance for a set of non orthogonal components are also
     implemented.
 License: GPL (>=2.0)
 Imports:
     stats,
     mvtnorm
-RoxygenNote: 5.0.1
+RoxygenNote: 7.2.2
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+Encoding: UTF-8

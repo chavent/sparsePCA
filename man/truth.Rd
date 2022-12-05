@@ -2,7 +2,7 @@
 % Please edit documentation in R/critEval.R
 \name{truth}
 \alias{truth}
-\title{proportion of correct or incorrect zero}
+\title{Proportion of correct or incorrect zero}
 \usage{
 truth(Ztrue, Z, method = "correct")
 }
@@ -14,7 +14,8 @@ truth(Ztrue, Z, method = "correct")
 \item{method}{either "correct" or "incorrect".}
 }
 \description{
-Returns the proportion of zero correctly or incorrectly found in each colum of the loadings matrix Z.
+Returns the proportion of zero correctly or incorrectly found 
+in each colum of the loadings matrix Z.
 }
 \details{
 The proportion of zero correctly found is the true positive rate (tpr) i.e. the proportion of true zero
@@ -33,4 +34,3 @@ of zero in Z which are not true zero.
  truth(Ztrue,Z) #tpr
  truth(Ztrue,Z,method="incorrect") #fpr
 }
-

@@ -1,38 +1,62 @@
 #' @title Sparse PCA 
-#' @description Sparse principal component analysis (PCA). Three algorithms are proposed for the determination of the
-#' sparse loadings : on based on a deflation procedure and two based on block optimisation.
-#' @param A a n times p  numerical data matrix
-#' @param m number of components
-#' @param lambda a vector of dimension m with reduced sparsity parameters (in relative value with respect to the theoretical upper bound). 
+#' @export
+#' 
+#' @description This function performs sparse principal component analysis (PCA)  
+#' using a block optimisation algorithm or an iterative deflation algorithm.
+#' 
+#' @param A a numerical data matrix of size n by p (observations by variables)
+#' @param m the number of components
+#' @param lambda a numerical vector of size m providing the reduced sparsity 
+#' parameters (in relative value with respect to the theoretical upper bound). 
 #' Each reduced sparsity parameter is a value between 0 and 1.
-#' @param block either 0 or 1. block==0 means that deflation is used if more than one component need to be computed.
-#' A block algorithm is otherwise used, that computes m components at once. By default, block=1.
-#' @param mu vector of dimension m with the mu parameters (required for the block algorithms only).
+#' @param block either 0 or 1. block==0 means that deflation is used if more 
+#' than one component. A block optimisation algorithm is otherwise used
+#' that computes m components at once. By default, block=1.
+#' @param mu numerical vector of size m with the mu parameters (required for the block algorithms only).
 #' By default, mu_j=1/j.
-#' @param center a logical value indicating whether the variables should be shifted to be zero centered.
-#' @param scale a logical value indicating whether the variables should be scaled to have unit variance.
+#' @param center a logical value indicating whether the variables should be 
+#' shifted to be zero centered.
+#' @param scale a logical value indicating whether the variables should be 
+#' scaled to have unit variance.
 #' @param iter_max maximum number of admissible iterations.
 #' @param epsilon accuracy of the stopping criterion. 
-#' @param post If TRUE the loadings are obtained with post-processing.
-#' @return \item{Z}{the p times m matrix that contains the m sparse loading vectors} 
-#' @return \item{Y}{the n times m matrix that contains the m principal components} 
-#' @return \item{B}{the data matrix centered (if center=TRUE) and scaled (if scale=TRUE)}
-#' @details The principal components are given by Y=BZ  where B is the matrix A which has been centered (if scale=FALSE) or standardized (if scale=TRUE) and Z is the matrix of the sparse loading vectors. 
+#' 
+#' @return \item{Z}{a p by m numerical matrix with the m sparse loading vectors} 
+#' @return \item{Y}{a n by m numerical matrix with the m principal components} 
+#' @return \item{B}{the numerical data matrix centered (if center=TRUE) and scaled 
+#' (if scale=TRUE)}
+#' 
+#' @details This function implements an optimal projected variance sparse
+#' block PCA algorithm and a deflation algorithm applying the block algorithm with 
+#' one single component iteratively to each deflated data matrix. 
+#' 
+#' The block algorithm uses a numerical vector of parameters \code{mu} usually 
+#' chosen either striclty decreasing (mu_j=1/j) or all equal (mu_j=1 for all j).
+#' Striclty decreasing parameters relieve the underdetermination which happens 
+#' in some situations and drives to a solution close to the PCA solution.
+#' 
+#' The principal components are defined by Y=BZ  where B is the centered (if 
+#' center=TRUE) and scaled (if scale=TRUE) data matrix and where Z is the sparse loading matrix. 
+#' 
 #'@references 
-#'\itemize{
-#'\item M. Chavent and G. Chavent, Group-sparse block PCA and explained variance, arXiv:1705.00461
-#'\item M. Journee and al., Generalized Power Method for Sparse Principal Component Analysis, Journal of Machine Learning Research 11 (2010) 517-553.
-#'\item H. Shen and J.Z. Huang, Journal of Multivariate Analysis 99 (2008) 1015-1034.
-#'}
-#' @export
+#'M. Chavent and G. Chavent, Optimal projected variance group-sparse block PCA, 
+#'submitted, 2020.
+#'@references
+#'M. Journee, Y. Nesterov, P. Richtarik, and R. Sepulchre. Generalized power 
+#'method for sparse principal component analysis. Journal of Machine Learning
+#'Research, 11:517-553, 2010.
+#'
+#'@seealso \code{\link{groupsparsePCA}}, \code{\link{pev}}, 
+#'\code{\link{explainedVar}}
+#'
 #' @examples 
-#' # Example from Shen & Huang 2008
+#' # Simulated data
 #'  v1 <- c(1,1,1,1,0,0,0,0,0.9,0.9)
 #'  v2 <- c(0,0,0,0,1,1,1,1,-0.3,0.3)
 #'  valp <- c(200,100,50,50,6,5,4,3,2,1)
-#'  n <- 50
-#'  A <- simuPCA(n,cbind(v1,v2),valp,seed=1)
-#'  # Three algorithms
+#'  A <- simuPCA(50,cbind(v1,v2),valp,seed=1)
+#'  
+#'  # Three sparse PCA algorithms
 #'  Z <- sparsePCA(A,2,c(0.5,0.5),block=0)$Z #deflation
 #'  Z <- sparsePCA(A,2,c(0.5,0.5),block=1)$Z #block different mu
 #'  Z <- sparsePCA(A,2,c(0.5,0.5),block=1,mu=c(1,1))$Z #block same mu
@@ -41,9 +65,9 @@
 #'  data("protein")
 #'  Z <- sparsePCA(protein,2,c(0.5,0.5))$Z #block different mu
 #'  
-#'@seealso \code{\link{groupsparsePCA}}, \code{\link{pev}}
 #'
-sparsePCA <- function(A,m,lambda,block=1, mu=1/1:m,post=FALSE,center=TRUE,scale=TRUE,iter_max=1000,epsilon=0.0001  )
+sparsePCA <- function(A,m,lambda, block=1, mu=1/1:m,
+                      center=TRUE,scale=TRUE,iter_max=1000,epsilon=0.0001  )
 {
   n <- nrow(A)
   p <- ncol(A)
@@ -61,13 +85,10 @@ sparsePCA <- function(A,m,lambda,block=1, mu=1/1:m,post=FALSE,center=TRUE,scale=
     obj$u %*% t(obj$v)
   }
   
-  iter_max <- 1000   # maximum number of admissible iterations
-  epsilon <- 0.0001  # accuracy of the stopping criterion 
-
   Z <- matrix(0,p,m)
   rownames(Z) <- colnames(A)
   A <- as.matrix(A)
-  gamma <- rep(NA,m)
+
   
   if (center==TRUE)
     A <- scale(A,center=TRUE, scale=FALSE) #center data
@@ -77,6 +98,7 @@ sparsePCA <- function(A,m,lambda,block=1, mu=1/1:m,post=FALSE,center=TRUE,scale=
   if ((m==1) || (m>1 && block==0)) # deflation is used if m>1
   {
     B <- A
+    gamma <- rep(NA,m)
     X <- matrix(NA,n,m)
     for (comp in 1:m)   #loop on the components
     {
@@ -111,7 +133,7 @@ sparsePCA <- function(A,m,lambda,block=1, mu=1/1:m,post=FALSE,center=TRUE,scale=
       y <- B%*%z  
       B <- B-y%*%t(z)
       #B <- scale(B,center=TRUE,scale=FALSE) # center the matrix of residuals
-      #B <- scale(B<)*sqrt(n/(n-1)) # standardize the matrix of residuals
+      #B <- scale(B)*sqrt(n/(n-1)) # standardize the matrix of residuals
       Z[,comp]<-z
       X[,comp] <- y/norm2(y)
     }
@@ -162,20 +184,3 @@ sparsePCA <- function(A,m,lambda,block=1, mu=1/1:m,post=FALSE,center=TRUE,scale=
 }
 
 
-#' Ztrue data
-#' @format A data  matrix with 20 rows and 4 columns. 
-#' @source Chavent & Chavent (2017).
-#' @description The four columns are specified leading eigenvectors of a covariance matrix used to
-#' simulate data from a group-sparse PCA model : the 20 variables are organized in
-#' 5 groups of 4 variables. 
-#' @name Ztrue
-NULL
-
-#' Protein data
-#' @format A data matrix with 25 rows (the European countries) and 9 columns (the food groups) 
-#' @source Originated by A. Weber and cited in Hand et al., A Handbook of Small Data Sets, (1994, p. 297).
-#' @description The data measure the amount of protein consumed for nine food groups in 
-#' 25 European countries. The nine food groups are red meat (RedMeat), white meat (WhiteMeat), 
-#' eggs (Eggs), milk (Milk), fish (Fish), cereal (Cereal), starch (Starch), nuts (Nuts), and fruits and vegetables (FruitVeg).
-#' @name protein 
-NULL
