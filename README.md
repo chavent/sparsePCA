@@ -1,6 +1,6 @@
 ## Description
 
-This package performs sparse or group-sparse principal component analysis. Deflation and block algorithms are implemented. Five different definition of explained variance for a set of non orhogonal components are also implemented.
+This package performs sparse or group-sparse principal component analysis with deflation or block approaches. Sparse PCA of mixed data is also implemented.
 
 ## Install
 

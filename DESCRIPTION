@@ -1,18 +1,18 @@
 Package: sparsePCA
 Type: Package
-Title: sparse and group-sparse PCA
-Version: 1.0
-Date: 2015-04-15
+Title: Sparse and group-sparse PCA
+Version: 1.1
+Date: 2022-01-06
 Author: Marie Chavent
 Maintainer: Marie Chavent <marie.chavent@u-bordeaux.fr>
 Description: This package performs sparse or group-sparse principal component
-    analysis. Deflation and block algorithms are implemented. Five different
-    definition of explained variance for a set of non orthogonal components are also
-    implemented.
+    analysis with deflation or block approaches. Sparse PCA of mixed data is
+    also implemented.
 License: GPL (>=2.0)
 Imports:
     stats,
-    mvtnorm
+    mvtnorm,
+    PCAmixdata
 RoxygenNote: 7.2.2
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr

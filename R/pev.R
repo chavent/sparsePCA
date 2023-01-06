@@ -12,12 +12,11 @@
 #' The object \code{x} is the output of \code{\link{sparsePCA}} or 
 #' \code{\link{groupsparsePCA}}. The  variance of the not necessarily 
 #' orthogonal principal components in \code{x}
-#' is calculated with the optimal projected variance definition (see Chavent and Chavent, 2020)
+#' is calculated with the optimal projected variance definition
 #' and is divided by the total variance of the data to get a proportion of
 #' explained variance (pev).
 #' 
-#'@references M. Chavent and G. Chavent, Optimal projected variance group-sparse
-#' block PCA, submitted, 2020.
+#'@references M. Chavent, G. Chavent. Optimal Projected Variance Group-Sparse Block PCA. 2021. ⟨hal-03125264⟩
 #' 
 #' @seealso   \code{\link{optVardim}}, \code{\link{explainedVar}}, 
 #' \code{\link{sparsePCA}}, \code{\link{groupsparsePCA}}, 
